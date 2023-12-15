@@ -1,26 +1,23 @@
-let move_speed = 3, grativy = 0.5;
+let move_speed = 3, grativy = 0.5;//speed of movement and gravitational acceleration.
 let bird = document.querySelector('.bird');
 let img = document.getElementById('bird-1');
 let sound_point = new Audio('sounds effect/point.mp3');
 let sound_die = new Audio('sounds effect/die.mp3');
-
 // getting bird element properties
 let bird_props = bird.getBoundingClientRect();
-
 // This method returns DOMReact -> top, right, bottom, left, x, y, width and height
 let background = document.querySelector('.background').getBoundingClientRect();
-
 let score_val = document.querySelector('.score_val');
 let message = document.querySelector('.message');
 let score_title = document.querySelector('.score_title');
-
 let game_state = 'Start';
-img.style.display = 'none';
-message.classList.add('messageStyle');
 
-document.addEventListener('keydown', (e) => {
-    
-    if(e.key == 'Enter' && game_state != 'Play'){
+
+img.style.display = 'none';
+message.classList.add('messageStyle');//massage background
+
+document.addEventListener('keydown', (e) => {//Event Listeners: Enter key to start the game and the ArrowUp key to control the bird.
+    if(e.key == 'Enter' ){
         document.querySelectorAll('.pipe_sprite').forEach((e) => {
             e.remove();
         });
@@ -33,9 +30,10 @@ document.addEventListener('keydown', (e) => {
         message.classList.remove('messageStyle');
         play();
     }
-});
+  }
+);
 
-function play(){
+function play(){// main function
     function move(){
         if(game_state != 'Play') return;
 
@@ -52,7 +50,7 @@ function play(){
                     message.innerHTML = 'Game Over'.fontcolor('red') + '<br>Press Enter To Restart';
                     message.classList.add('messageStyle');
                     img.style.display = 'none';
-                    sound_die.play();
+                    sound_die.play(); //bird die
                     return;
                 }else{
                     if(pipe_sprite_props.right < bird_props.left && pipe_sprite_props.right + move_speed >= bird_props.left && element.increase_score == '1'){
@@ -72,25 +70,27 @@ function play(){
         if(game_state != 'Play') return;
         bird_dy = bird_dy + grativy;
         document.addEventListener('keydown', (e) => {
-            if(e.key == 'ArrowUp' || e.key == ' '){//jump button
+
+            if(e.key == 'ArrowUp' || e.key == ' '){
                 img.src = 'images/Bird-2.png';
-                bird_dy = -6.0;  //jump er time
+                bird_dy = -6;  //jump time to y-axis
             }
-        });
-
-        document.addEventListener('keyup', (e) => {
-            if(e.key == 'ArrowUp' || e.key == ' '){//pakha narano
-                img.src = 'images/Bird.png';
-            }
-        });
-
-        if(bird_props.top <= 0 || bird_props.bottom >= background.bottom){
-            game_state = 'End';
-            message.style.left = '28vw';
-            window.location.reload();
-            message.classList.remove('messageStyle');
-            return;
         }
+    );
+
+    document.addEventListener('keyup', (e) => {
+        if(e.key == 'ArrowUp' || e.key == ' '){//pakha narano
+            img.src = 'images/Bird.png';
+        }
+    }
+    );
+    if(bird_props.top <= 0 || bird_props.bottom >= background.bottom){
+        game_state = 'End';
+        message.style.left = '28vw';
+        window.location.reload();
+        message.classList.remove('messageStyle');
+        return;
+    }
         bird.style.top = bird_props.top + bird_dy + 'px';
         bird_props = bird.getBoundingClientRect();
         requestAnimationFrame(apply_gravity);
@@ -99,7 +99,7 @@ function play(){
 
     let pipe_seperation = 0;
 
-    let pipe_gap = 35;
+    let pipe_gap = 35; //inner gap
 
     function create_pipe(){
         if(game_state != 'Play') return;
@@ -107,7 +107,7 @@ function play(){
         if(pipe_seperation > 115){
             pipe_seperation = 0;
 
-            let pipe_posi = Math.floor(Math.random() * 43) + 8;
+            let pipe_posi = Math.floor(Math.random() * 43) + 8;// mathematical eq
             let pipe_sprite_inv = document.createElement('div');
             pipe_sprite_inv.className = 'pipe_sprite';
             pipe_sprite_inv.style.top = pipe_posi - 70 + 'vh';

@@ -2,16 +2,15 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Arial, Helvetica, sans-serif; 
 }
-.background {
+.background { 	
+	background: url('images/background-img.png');
 	height: 100vh;
-	width: 100vw;
-	background: url('images/background-img.png') no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+	background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size:cover; /*Resize the background image to cover the entire container*/
+
 }
 .bird {
 	height: 100px;
@@ -27,13 +26,13 @@
 	left: 100vw;
 	height: 70vh;
 	width: 6vw;
-	background:radial-gradient(yellow 50%,red);
-	border: 5px solid black;
+	background:radial-gradient(yellow 28%,red);
+	border: 5px solid rgb(0, 0, 0);
 }
 .message {
 	position: absolute;
 	z-index: 10;
-	color: black;
+	color: rgb(0, 0, 0);
 	top: 30%;
 	left: 50%;
 	font-size: 4em;
@@ -53,8 +52,6 @@
 	font-size: 10vh;
 	font-weight: 100;
 	color: white;
-	-webkit-text-stroke-width: 2px;
-    -webkit-text-stroke-color: black;
 	top: 0;
 	left: 0;
 	margin: 10px;
@@ -64,7 +61,7 @@
 	color:rgb(255, 255, 145);
 	font-weight: bold;
 }
-@media only screen and (max-width: 1080px) {
+@media only screen and (max-width: 1080px) {/*Media Query: Adjusts styles for diffrent screens using @media*/
     .message{
 		font-size: 50px;
 		top: 50%;
