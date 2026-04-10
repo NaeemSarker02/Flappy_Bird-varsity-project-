@@ -34,12 +34,14 @@ body {
 	-webkit-user-select: none;
 	user-select: none;
 	-webkit-tap-highlight-color: transparent;
+	overscroll-behavior: none;
 }
 
 .game-shell {
 	position: relative;
 	width: 100vw;
 	height: 100vh;
+	height: 100dvh;
 	overflow: hidden;
 	isolation: isolate;
 }
@@ -61,6 +63,7 @@ body {
 .parallax,
 .cloud-layer,
 .pipe-layer,
+.particle-layer,
 .ground,
 .message,
 .hud,
@@ -175,6 +178,7 @@ body {
 	overflow: hidden;
 	z-index: 4;
 	cursor: pointer;
+	touch-action: manipulation;
 }
 
 .parallax {
@@ -263,8 +267,17 @@ body {
 	pointer-events: none;
 }
 
+.particle-layer {
+	inset: 0;
+	z-index: 6;
+	pointer-events: none;
+	overflow: hidden;
+	contain: layout style paint;
+}
+
 .pipe_sprite {
 	position: absolute;
+	left: 0;
 	width: var(--pipe-width);
 	border-radius: 18px;
 	background:
@@ -323,13 +336,92 @@ body {
 
 .bird {
 	left: 22%;
-	top: 40%;
+	top: 0;
 	width: clamp(84px, 9vw, 112px);
 	height: auto;
 	z-index: 6;
 	transform-origin: 50% 50%;
 	filter: drop-shadow(0 18px 20px rgba(28, 68, 109, 0.22));
-	will-change: transform, top;
+	will-change: transform;
+}
+
+.particle {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: var(--size, 12px);
+	height: var(--size, 12px);
+	border-radius: 999px;
+	background: var(--particle-color, rgba(255, 221, 106, 0.9));
+	box-shadow: 0 0 12px rgba(255, 197, 86, 0.34);
+	transform: translate3d(var(--start-x), var(--start-y), 0) scale(1);
+	animation: particleBurst var(--duration, 520ms) cubic-bezier(0.18, 0.72, 0.22, 1) forwards;
+	will-change: transform, opacity;
+	opacity: 0.95;
+}
+
+.particle--feather {
+	border-radius: 55% 45% 60% 40%;
+	filter: blur(0.2px);
+}
+
+.flap-button {
+	position: absolute;
+	right: max(16px, env(safe-area-inset-right));
+	bottom: calc(var(--ground-height) + max(18px, env(safe-area-inset-bottom)));
+	z-index: 9;
+	width: 92px;
+	height: 92px;
+	border: 0;
+	border-radius: 50%;
+	background:
+		radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.95), rgba(255, 244, 205, 0.8) 28%, rgba(255, 158, 35, 0.94) 70%, rgba(222, 109, 0, 0.95) 100%);
+	box-shadow:
+		0 16px 30px rgba(181, 91, 0, 0.28),
+		inset 0 3px 10px rgba(255, 255, 255, 0.55),
+		inset 0 -12px 18px rgba(141, 66, 0, 0.24);
+	color: white;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: 2px;
+	font-family: inherit;
+	transition: transform 120ms ease, box-shadow 120ms ease;
+	touch-action: manipulation;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.flap-button.is-visible {
+	display: flex;
+}
+
+.flap-button.is-pulsing {
+	animation: tapPulse 180ms ease;
+}
+
+.flap-button:active {
+	transform: scale(0.95);
+	box-shadow:
+		0 10px 18px rgba(181, 91, 0, 0.24),
+		inset 0 2px 8px rgba(255, 255, 255, 0.5),
+		inset 0 -10px 14px rgba(141, 66, 0, 0.24);
+}
+
+.flap-button__label {
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	opacity: 0.9;
+}
+
+.flap-button__title {
+	font-size: 1.35rem;
+	font-weight: 700;
+	line-height: 1;
+	text-shadow: 0 2px 8px rgba(104, 50, 0, 0.2);
 }
 
 .message {
@@ -451,6 +543,23 @@ body {
 	100% { transform: scale(1); }
 }
 
+@keyframes tapPulse {
+	0% { transform: scale(1); }
+	50% { transform: scale(0.92); }
+	100% { transform: scale(1); }
+}
+
+@keyframes particleBurst {
+	0% {
+		transform: translate3d(var(--start-x), var(--start-y), 0) scale(1);
+		opacity: 0.95;
+	}
+	100% {
+		transform: translate3d(calc(var(--start-x) + var(--drift-x)), calc(var(--start-y) + var(--drift-y)), 0) scale(0.35);
+		opacity: 0;
+	}
+}
+
 @keyframes groundSlide {
 	from { transform: translateX(0); }
 	to { transform: translateX(-40px); }
@@ -494,19 +603,35 @@ body {
 	}
 
 	.hud {
-		padding: 16px;
+		padding: max(14px, env(safe-area-inset-top)) 16px 0;
 		gap: 12px;
+	}
+
+	.brand-block {
+		padding: 10px 14px;
+		border-radius: 18px;
+	}
+
+	.brand-block__title {
+		font-size: clamp(1.5rem, 8vw, 2.3rem);
 	}
 
 	.scoreboard {
 		width: 100%;
 		justify-content: space-between;
+		gap: 10px;
 	}
 
 	.score-card {
 		flex: 1;
 		min-width: 0;
-		padding: 12px 14px;
+		padding: 10px 12px;
+		border-radius: 18px;
+	}
+
+	.score_val,
+	.best_val {
+		font-size: clamp(1.6rem, 8vw, 2.2rem);
 	}
 
 	.brand-block__eyebrow {
@@ -515,15 +640,60 @@ body {
 
 	.message {
 		width: calc(100vw - 28px);
-		padding: 22px 18px;
+		padding: 18px 16px;
+		top: 58%;
 	}
 
 	.message p {
 		font-size: 0.98rem;
 	}
 
+	.message h3 {
+		font-size: clamp(2rem, 10vw, 3rem);
+	}
+
+	.bird {
+		left: 17%;
+		width: clamp(70px, 19vw, 92px);
+	}
+
+	.flap-button {
+		width: 84px;
+		height: 84px;
+	}
+
+	.particle-layer {
+		z-index: 5;
+	}
+
 	.cloud--4,
 	.cloud--5 {
 		display: none;
+	}
+}
+
+@media only screen and (max-width: 420px) {
+	:root {
+		--hud-edge: 14px;
+	}
+
+	.score_title {
+		font-size: 0.68rem;
+		margin-bottom: 4px;
+	}
+
+	.flap-button {
+		right: 14px;
+		bottom: calc(var(--ground-height) + 12px);
+		width: 78px;
+		height: 78px;
+	}
+
+	.flap-button__label {
+		font-size: 0.7rem;
+	}
+
+	.flap-button__title {
+		font-size: 1.2rem;
 	}
 }
