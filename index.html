@@ -1,21 +1,64 @@
 <!DOCTYPE html>
-<head> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="images/favicon.ico"/>
-    <title>-Flappy Bird-</title>
-
+    <title>Flappy Bird</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="background"></div>
-    <img src="images/Bird.png" alt="bird-img" class="bird" id="bird-1">
-    <div class="message">
-        Enter To Start Game <p><span style="color:red;">&uarr;</span> ArrowUp to Control</p>
-    </div>
-    <div class="score">
-        <span class="score_title"></span>
-        <span class="score_val"></span> <!--for highlighting--> 
-    </div>
+    <main class="game-shell">
+        <div class="sun-glow"></div>
+        <div class="background"></div>
+
+        <div class="cloud-layer cloud-layer--back" aria-hidden="true">
+            <span class="cloud cloud--1"></span>
+            <span class="cloud cloud--2"></span>
+            <span class="cloud cloud--3"></span>
+        </div>
+
+        <div class="hud">
+            <div class="brand-block">
+                <p class="brand-block__eyebrow">Arcade Flight</p>
+                <h1 class="brand-block__title">Flappy Bird</h1>
+            </div>
+
+            <div class="scoreboard">
+                <div class="score-card">
+                    <span class="score_title">Score</span>
+                    <span class="score_val">0</span>
+                </div>
+                <div class="score-card score-card--secondary">
+                    <span class="score_title">Best</span>
+                    <span class="best_val">0</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="stage" aria-label="Flappy Bird Game Area">
+            <div class="parallax parallax--far"></div>
+            <div class="parallax parallax--near"></div>
+            <div class="pipe-layer" aria-hidden="true"></div>
+
+            <img src="images/Bird.png" alt="Flappy Bird" class="bird" id="bird-1">
+
+            <div class="message messageStyle" role="status" aria-live="polite"></div>
+
+            <div class="ground" aria-hidden="true">
+                <div class="ground__top"></div>
+                <div class="ground__tiles"></div>
+            </div>
+        </section>
+
+        <div class="cloud-layer cloud-layer--front" aria-hidden="true">
+            <span class="cloud cloud--4"></span>
+            <span class="cloud cloud--5"></span>
+        </div>
+    </main>
 </body>
 </html>
-<!--Body Content: Contains elements for the game, such as the bird, background, message, and score.-->
